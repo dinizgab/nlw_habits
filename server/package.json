@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@fastify/cors": "^8.2.0",
-    "@prisma/client": "^4.8.1"
+    "@prisma/client": "^4.8.1",
+    "zod": "^3.20.2"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
