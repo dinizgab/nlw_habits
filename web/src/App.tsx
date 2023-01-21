@@ -1,7 +1,13 @@
+import Header from "./components/Header";
+import SummaryTable from "./components/SummaryTable";
+
 export default function App() {
   return (
-    <div className="w-full h-20 bg-black">
-      
+    <div className="w-screen h-screen flex flex-col justify-center items-center bg-background text-white">
+      <div className="w-full max-w-5xl px-6 flex flex-col gap-16">
+        <Header />
+        <SummaryTable />
+      </div>
     </div>
-  )
+  );
 }
