@@ -4,8 +4,9 @@ import { HabitDay, DAY_SIZE } from "../components/HabitDay";
 import Header from "../components/Header";
 import generateDatesFromYearBeginning from "../utils/generate-dates-from-year-beginning";
 import { api } from "../lib/axios";
-import axios, { AxiosHeaders } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Loading from "../components/Loading";
+import dayjs from "dayjs";
 
 const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];
 const datesFromsYearStart = generateDatesFromYearBeginning();
@@ -14,17 +15,31 @@ const minimumSummaryDatesSizes = 18 * 5;
 const amountOfDaysToFill =
   minimumSummaryDatesSizes - datesFromsYearStart.length;
 
+type Summary = {
+  id: string,
+  date: string;
+  amount: number;
+  completed: number;
+}[]
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   const { navigate } = useNavigation();
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   async function fetchData() {
     try {
-      const response = await api.get("/summary").then((res) => {
-        setSummary(res.data);
-      });
+      const res = await api.get("/summary");
+      setSummary(res.data);
     } catch (error) {
       Alert.alert("Ops!", "Nao foi possivel carregar o sumario de habitos");
       console.log(error);
@@ -53,23 +68,36 @@ export default function Home() {
           ))}
         </View>
 
-        <View className="flex-row flex-wrap">
-          {datesFromsYearStart.map((date) => (
-            <HabitDay
-              key={date.toISOString()}
-              onPress={() => navigate("habit", { date: date.toISOString() })}
-            />
-          ))}
+        {summary && (
+          <View className="flex-row flex-wrap">
+            {datesFromsYearStart.map((date) => {
+              const dayWithHabits = summary.find((day) => {
+                return dayjs(date).isSame(day.date);
+              });
 
-          {amountOfDaysToFill > 0 &&
-            Array.from({ length: amountOfDaysToFill }).map((_, index) => (
-              <View
-                key={index}
-                className="bg-zinc-900 rounded-lg border-2 m-1 border-zinc-800 opacity-40"
-                style={{ width: DAY_SIZE, height: DAY_SIZE }}
-              />
-            ))}
-        </View>
+              return (
+                <HabitDay
+                  key={date.toISOString()}
+                  onPress={() =>
+                    navigate("habit", { date: date.toISOString() })
+                  }
+                  date={date}
+                  amountOfHabits={dayWithHabits?.amount}
+                  amountCompleted={dayWithHabits?.completed}
+                />
+              );
+            })}
+
+            {amountOfDaysToFill > 0 &&
+              Array.from({ length: amountOfDaysToFill }).map((_, index) => (
+                <View
+                  key={index}
+                  className="bg-zinc-900 rounded-lg border-2 m-1 border-zinc-800 opacity-40"
+                  style={{ width: DAY_SIZE, height: DAY_SIZE }}
+                />
+              ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );

@@ -11,9 +11,13 @@ export const DAY_MARGIN_BETWEEN = 8;
 export const DAY_SIZE =
   Dimensions.get("screen").width / WEEK_DAYS - (SCREEN_HORIZONTAL_PADDING + 5);
 
-interface HabitDayProps extends TouchableOpacityProps {}
+interface HabitDayProps extends TouchableOpacityProps {
+  amountOfHabits?: number;
+  amountCompleted?: number;
+  date: Date;
+}
 
-export function HabitDay({ ...rest }: HabitDayProps) {
+export function HabitDay({ amountCompleted = 0, amountOfHabits = 0, ...rest }: HabitDayProps) {
   return (
     <TouchableOpacity
       {...rest}
