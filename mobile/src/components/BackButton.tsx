@@ -1,7 +1,8 @@
+import colors from "tailwindcss/colors";
+
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import colors from "tailwindcss/colors";
 
 export default function BackButton() {
   const { goBack } = useNavigation();
