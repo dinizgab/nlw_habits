@@ -38,7 +38,7 @@ export default function SummaryTable() {
       </div>
 
       <div className="grid grid-rows-7 grid-flow-col gap-3">
-        {summaryDates.map((date) => {
+        {summary.length > 0 && summaryDates.map((date) => {
           const dayInSummary = summary.find((day) => {
             return dayjs(date).isSame(day.date, "day");
           });
@@ -47,7 +47,7 @@ export default function SummaryTable() {
             <HabitDay
               date={date}
               amount={dayInSummary?.amount}
-              amountCompleted={dayInSummary?.completed}
+              defaultAmountCompleted={dayInSummary?.completed}
               key={date.toString()}
             />
           );

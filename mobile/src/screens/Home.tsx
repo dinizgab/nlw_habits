@@ -40,6 +40,7 @@ export default function Home() {
     try {
       const res = await api.get("/summary");
       setSummary(res.data);
+      console.log(res)
     } catch (error) {
       Alert.alert("Ops!", "Nao foi possivel carregar o sumario de habitos");
       console.log(error);

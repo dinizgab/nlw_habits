@@ -5,11 +5,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import BackButton from "../components/BackButton";
 import CheckBox from "../components/CheckBox";
 import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
+import { api } from "../lib/axios";
 
 const availableWeekDays = [
   "Domingo",
@@ -23,6 +25,26 @@ const availableWeekDays = [
 
 export default function New() {
   const [weekDays, setWeekDays] = useState<number[]>([]);
+  const [title, setTitle] = useState<string>("");
+
+  async function handleNewHabit() {
+    try {
+      if (!title.trim()) {
+        Alert.alert("Novo habito", "Informe o nome do habito");
+      } else if (weekDays.length === 0) {
+        Alert.alert("Novo habito", "Esolha a periodicidade do habito");
+      }
+
+      await api.post("/habits", { title, weekDays });
+      setTitle("");
+      setWeekDays([]);
+
+      Alert.alert("Novo habito", "Habito criado com sucesso")
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Ops!", "Nao foi possivel criar o novo habito");
+    }
+  }
 
   function handleToggleWeekDay(weekDayIndex: number) {
     if (weekDays.includes(weekDayIndex)) {
@@ -49,6 +71,8 @@ export default function New() {
           className="h-12 pl-4 rounded-lg mt-3 bg-zinc-800 text-white focus:border-2 focus:border-green-600"
           placeholder="ex.: Exercicios, dormir bem, etc..."
           placeholderTextColor={colors.zinc[400]}
+          onChangeText={setTitle}
+          value={title}
         />
 
         <Text className="mt-4 mb-3 text-white font-extrabold text-base">
@@ -67,6 +91,7 @@ export default function New() {
         <TouchableOpacity
           className="w-full py-4 bg-green-600 rounded-lg justify-center flex-row items-center mt-4"
           activeOpacity={0.7}
+          onPress={handleNewHabit}
         >
           <Feather name="check" size={20} color={colors.white} />
           <Text className="text-white pl-3">Confirmar</Text>
