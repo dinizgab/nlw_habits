@@ -30,16 +30,16 @@ export default function New() {
   async function handleNewHabit() {
     try {
       if (!title.trim()) {
-        Alert.alert("Novo habito", "Informe o nome do habito");
+        return Alert.alert("Novo habito", "Informe o nome do habito");
       } else if (weekDays.length === 0) {
-        Alert.alert("Novo habito", "Esolha a periodicidade do habito");
+        return Alert.alert("Novo habito", "Esolha a periodicidade do habito");
       }
 
       await api.post("/habits", { title, weekDays });
       setTitle("");
       setWeekDays([]);
 
-      Alert.alert("Novo habito", "Habito criado com sucesso")
+      Alert.alert("Novo habito", "Habito criado com sucesso");
     } catch (error) {
       console.log(error);
       Alert.alert("Ops!", "Nao foi possivel criar o novo habito");
